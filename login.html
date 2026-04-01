@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quizzler — Log In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: #d9d9d9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chrome {
+      width: 980px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 48px rgba(0,0,0,.22);
+    }
+    .titlebar {
+      height: 36px;
+      background: #ebebeb;
+      border-bottom: 1px solid #d0d0d0;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .r{background:#ff5f57;} .y{background:#febc2e;} .g{background:#28c840;}
+    .split {
+      display: grid;
+      grid-template-columns: 47% 53%;
+      min-height: 520px;
+    }
+    .left {
+      background: #1a9d9d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 44px;
+    }
+    .img-box {
+      width: 290px;
+      height: 250px;
+      background: #cdcdcd;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 26px;
+    }
+    .img-box svg { width: 72px; height: 72px; }
+    .brand { font-size: 56px; font-weight: 800; color: #fff; letter-spacing: -1px; margin-bottom: 10px; }
+    .tagline { font-size: 16px; color: rgba(255,255,255,.85); text-align: center; line-height: 1.5; }
+    .right {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 72px 0 64px;
+    }
+    .form-box { width: 100%; max-width: 380px; }
+    h1 { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 36px; }
+    .grp { margin-bottom: 24px; }
+    .lbl { display: block; font-size: 14px; font-weight: 700; color: #111; margin-bottom: 9px; }
+    input[type=text], input[type=password] {
+      width: 100%;
+      border: 1.5px solid #c6c6c6;
+      border-radius: 6px;
+      padding: 13px 15px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #222;
+      outline: none;
+      background: #fff;
+      transition: border-color .18s;
+    }
+    input::placeholder { color: #b8b8b8; }
+    input:focus { border-color: #1a9d9d; }
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .btn {
+      padding: 14px 0;
+      background: #1a9d9d;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: filter .15s;
+    }
+    .btn:hover { filter: brightness(.88); }
+    .btn-guest {
+      display: block;
+      width: 100%;
+      padding: 14px 0;
+      background: #1a9d9d;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: filter .15s;
+    }
+    .btn-guest:hover { filter: brightness(.88); }
+    .forgot { font-size: 13px; color: #555; text-decoration: none; }
+    .forgot:hover { color: #1a9d9d; text-decoration: underline; }
+    .err-box {
+      display: none;
+      margin-bottom: 14px;
+      padding: 10px 13px;
+      background: #fff1f1;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      font-size: 13px;
+      border-radius: 5px;
+    }
+    .err-box.show { display: block; }
+  </style>
+</head>
+<body>
+<div class="chrome">
+  <div class="titlebar">
+    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+  </div>
+  <div class="split">
+    <div class="left">
+      <div class="img-box">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="64" height="64" rx="8" stroke="#2a2a2a" stroke-width="4.5"/>
+          <circle cx="25" cy="27" r="6.5" stroke="#2a2a2a" stroke-width="4"/>
+          <polyline points="8,57 27,35 43,50 55,39 72,57" stroke="#2a2a2a" stroke-width="4" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand">Quizzler</div>
+      <div class="tagline">The fun, patent pending quiz<br>game</div>
+    </div>
+    <div class="right">
+      <div class="form-box">
+        <h1>Log in</h1>
+        <div class="err-box" id="err">Please enter your username and password.</div>
+        <form id="loginForm" novalidate>
+          <div class="grp">
+            <label class="lbl" for="username">Account number</label>
+            <input type="text" id="username" placeholder="Username" autocomplete="username"/>
+          </div>
+          <div class="grp">
+            <label class="lbl" for="password">Password</label>
+            <input type="password" id="password" placeholder="Password" autocomplete="current-password"/>
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn">Log In</button>
+            <button type="button" class="btn" onclick="location.href='create_account.html'">Create Account</button>
+          </div>
+          <button type="button" class="btn-guest" onclick="location.href='home.html'">Play as Guest</button>
+          <a class="forgot" href="#">Forgot your password?</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var u = document.getElementById('username').value.trim();
+    var p = document.getElementById('password').value;
+    var err = document.getElementById('err');
+    if (!u || !p) { err.classList.add('show'); return; }
+    err.classList.remove('show');
+    location.href = 'home.html';
+  });
+</script>
+</body>
+</html>
