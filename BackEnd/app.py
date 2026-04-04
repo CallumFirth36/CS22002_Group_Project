@@ -1,13 +1,15 @@
-from flask import Flask
-from flask_restful import Api
-from flask_restful import Resource
-from flask import jsonify, request
-from models import Quiz, Question, Answer
+from flask import Flask, jsonify, request
+from flask_restful import Api, Resource
+
 
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///quiz.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# THIS import must come AFTER creating the Flask app
+from models import db, Quiz, Question, Answer
+
 
 db.init_app(app)
 api = Api(app)

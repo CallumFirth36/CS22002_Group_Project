@@ -9,7 +9,7 @@
 import {QuizCard} from "../components/quizCard.js";
 
 // Quick quiz for testing
-const testQuiz ={
+/*const testQuiz ={
     title: "Test Title",
     questions: [
         {
@@ -31,23 +31,46 @@ const testQuiz ={
             correct: 1
         }
     ]
-};
+};*/
 
 
 export function PlayQuizPage() {
 
     const app = document.getElementById("app");
 
+    let quiz = null;
+    let loading = true;
     let current = 0; // Current question index
-    let selectedAnswers = Array(testQuiz.questions.length).fill(null); // Create an empty array for the selected answers
+    let selectedAnswers = []; // Create an empty array for the selected answers
+
+    // Fetch quiz from backend
+    fetch("https://stunning-space-xylophone-pjwx9xwj7xg63rqj4-5000.app.github.dev/api/quizzes/1")
+        .then(res => res.json())
+        .then(data => {
+            quiz = data;
+            selectedAnswers = Array(quiz.questions.length).fill(null);
+            loading = false;
+            render();
+        })
+        .catch(err => {
+            console.error("Failed to load quiz:", err);
+            app.innerHTML = "<h2>Error loading quiz.</h2>";
+        });
+
 
     function render() {
         app.innerHTML = ""; // clear page
 
+        if (loading) {
+            app.innerHTML = "<h2>Loading quiz...</h2>";
+            return;
+        }
+
+
         app.innerHTML = `<ion-icon name="person"></ion-icon>`;
 
         const title = document.createElement("h1");
-        title.textContent = testQuiz.title;
+        title.textContent = quiz.title;
         app.appendChild(title);
 
         const question = document.createElement("h2");
@@ -56,7 +79,7 @@ export function PlayQuizPage() {
 
         
         const card = QuizCard(
-            testQuiz.questions[current],
+            quiz.questions[current],
             (selectedIndex)=> {
                 selectedAnswers[current] = selectedIndex;
                 render(); // Re-renders to highlight selected button
@@ -83,7 +106,7 @@ export function PlayQuizPage() {
         }
 
         // Next
-        if (current < testQuiz.questions.length -1) {
+        if (current < quiz.questions.length -1) {
             const nextBtn = document.createElement("button");
             nextBtn.textContent = "Next";
             nextBtn.classList.add("next");
@@ -105,6 +128,7 @@ export function PlayQuizPage() {
         }
 
         app.appendChild(nav);
-    }   
-    render();
+    } 
+      
+    //render();
 }
