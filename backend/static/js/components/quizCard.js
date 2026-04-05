@@ -16,7 +16,7 @@ export function QuizCard(data, onAnswerSelect, selectedAnswer) {
     card.innerHTML =` 
         <img src="${image}" class="quiz_image"/>
 
-        <p class="quiz_question">${question}</p>
+        <h2 class="quiz_question">${question}</h2>
 
         <div class="quiz_answers">
             ${answers.map((a,i) => `
