@@ -44,7 +44,7 @@ export function PlayQuizPage() {
     let selectedAnswers = []; // Create an empty array for the selected answers
 
     // Fetch quiz from backend
-    fetch("https://stunning-space-xylophone-pjwx9xwj7xg63rqj4-5000.app.github.dev/api/quizzes/1")
+    fetch("/api/quizzes/1")
         .then(res => res.json())
         .then(data => {
             quiz = data;

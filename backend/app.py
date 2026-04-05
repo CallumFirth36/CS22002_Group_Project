@@ -1,25 +1,29 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_restful import Api, Resource
-
 
 app = Flask(__name__)
 
+# Database config
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///quiz.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# THIS import must come AFTER creating the Flask app
+# Import models AFTER app is created
 from models import db, Quiz, Question, Answer
-
 
 db.init_app(app)
 api = Api(app)
 
-
+# ---------------------------
+# Serve Frontend (SPA)
+# ---------------------------
 @app.route("/")
-def home():
-    return "Quiz API Running!"
+def index():
+    return render_template("index.html")
 
-# Get, Post - Quiz List
+# ---------------------------
+# REST API
+# ---------------------------
+
 class QuizListAPI(Resource):
     def get(self):
         quizzes = Quiz.query.all()
@@ -36,7 +40,7 @@ class QuizListAPI(Resource):
 
         return {"message": "Quiz created", "id": new_quiz.id}, 201
 
-# Get, Put, Delete - QuizAPI
+
 class QuizAPI(Resource):
     def get(self, quiz_id):
         quiz = Quiz.query.get(quiz_id)
@@ -87,7 +91,7 @@ class QuizAPI(Resource):
 
         return {"message": "Quiz deleted successfully"}
 
-# Post - Question List
+
 class QuestionListAPI(Resource):
     def post(self, quiz_id):
         quiz = Quiz.query.get(quiz_id)
@@ -120,7 +124,7 @@ class QuestionListAPI(Resource):
 
         return {"message": "Question added", "id": q.id}, 201
 
-# Put, Delete - Single Question
+
 class QuestionAPI(Resource):
     def put(self, quiz_id, question_id):
         question = Question.query.get(question_id)
@@ -132,15 +136,12 @@ class QuestionAPI(Resource):
         if not all(k in data for k in required):
             return {"error": "Missing required fields"}, 400
 
-        # Update question
         question.question_text = data["question"]
         question.image_url = data["image"]
         question.correct_answer_index = data["correct"]
 
-        # Delete old answers
         Answer.query.filter_by(question_id=question_id).delete()
 
-        # Add new answers
         for i, text in enumerate(data["answers"]):
             db.session.add(Answer(
                 question_id=question_id,
@@ -163,19 +164,14 @@ class QuestionAPI(Resource):
         return {"message": "Question deleted successfully"}
 
 
-
-
+# Register API routes
 api.add_resource(QuizListAPI, "/api/quizzes")
 api.add_resource(QuizAPI, "/api/quizzes/<int:quiz_id>")
 api.add_resource(QuestionListAPI, "/api/quizzes/<int:quiz_id>/questions")
 api.add_resource(QuestionAPI, "/api/quizzes/<int:quiz_id>/questions/<int:question_id>")
 
 
-
-
-
-
-
+# Run app
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
