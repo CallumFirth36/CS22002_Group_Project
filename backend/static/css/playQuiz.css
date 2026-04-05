@@ -18,16 +18,18 @@
     gap: 80px;                 /* spacing between buttons */
     width: auto;               /* shrink container to fit buttons */
     margin: 0 auto; 
+    margin-top: 40px;
 }
 
 .quiz_nav button {
     background-color: #45b3b5;
     outline: none;
-    padding: 1.5rem 5rem;
-    border-radius: 0.25rem;
+    padding: 0.8rem 5rem;
+    border-radius: 0.70rem;
     border: 3px solid #45b3b5;
     color: white;
     font-family: monospace;
+    font-size: 20px;
 }
 
 .quiz_nav button:hover {
@@ -37,11 +39,12 @@
 .answer_btn {
     background-color: #ffffff;
     outline: none;
-    padding: 1.5rem 5rem;
-    border-radius: 0.25rem;
+    padding: 0.8rem 4.5rem;
+    border-radius: 0.70rem;
     border: 3px solid #45b3b5;
     color: rgb(0, 0, 0);
     font-family: monospace;
+    font-size: 20px;
 }
 
 .answer_btn:hover {
@@ -64,4 +67,36 @@ ion-icon {
 ion-icon:hover {
     color: #30737a; 
     
+}
+
+.quiz_title {
+    font-size: 70px;
+    color: #30737a; 
+    margin-bottom: 0px;
+    
+}
+
+.quiz_question_num {
+    font-size: 40px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.quiz_image {
+    width: 100%;
+    max-width:500px;     /* control how wide the image can get */
+    height: 350px;        /* fixed display height */
+    object-fit: contain;    /* crop edges but keep aspect ratio */
+    border-radius: 8px;
+}
+
+.quiz_question {
+    max-width: 600px;      /* controls when the line wraps */
+    margin: 0 auto;        /* centres the text block */
+    text-align: center;    /* optional */
+    overflow-wrap: break-word; 
+}
+
+.quiz_answers {
+    margin-top: 20px;
 }

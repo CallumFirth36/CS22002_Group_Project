@@ -14,7 +14,7 @@ export function QuizCard(data, onAnswerSelect, selectedAnswer) {
     card.classList.add("quiz-card")
 
     card.innerHTML =` 
-        <img src="${image}" class="quiz_image"/>
+        <img class="quiz_image" src="${image}" class="quiz_image"/>
 
         <h2 class="quiz_question">${question}</h2>
 
