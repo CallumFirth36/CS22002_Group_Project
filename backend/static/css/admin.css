@@ -1,0 +1,254 @@
+.admin-page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px 16px 40px;
+}
+
+.admin-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.admin-header__title {
+    margin: 0;
+    color: var(--teal);
+    font-size: 64px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.admin-header__user {
+    position: absolute;
+    right: 0;
+    top: 4px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    color: var(--teal);
+    padding: 0;
+}
+
+.admin-header__user svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+}
+
+.admin-content {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 38px;
+    align-items: start;
+}
+
+.question-list {
+    border: 2px solid #37bac0;
+    border-radius: 46px;
+    padding: 18px 18px 16px;
+    background: #f8f8f8;
+}
+
+.question-list__title {
+    margin: 2px 0 12px;
+    text-align: center;
+    color: var(--teal);
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.question-list__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.question-list__controls {
+    margin-top: 14px;
+    display: grid;
+    gap: 8px;
+}
+
+.question-list__control-btn {
+    border: 1px solid var(--teal);
+    background: #ecffff;
+    color: var(--teal-dark);
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 8px 10px;
+}
+
+.question-list__control-btn--danger {
+    border-color: #c56f6f;
+    color: #9d4f4f;
+}
+
+.question-list__control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.question-list__item + .question-list__item {
+    border-top: 1px solid var(--line);
+}
+
+.question-list__button {
+    width: 100%;
+    border: none;
+    background: transparent;
+    display: grid;
+    grid-template-columns: 16px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 4px;
+    color: #3f3f3f;
+    text-align: left;
+    font-size: 17px;
+}
+
+.question-list__button--active {
+    color: #212121;
+    font-weight: 700;
+}
+
+.question-list__dot {
+    color: #6cb6ba;
+}
+
+.question-list__star {
+    color: var(--teal);
+    font-size: 22px;
+    line-height: 1;
+}
+
+.admin-editor__title {
+    margin: 0 0 8px;
+    color: var(--teal);
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+.admin-form__section {
+    margin-bottom: 12px;
+}
+
+.admin-form__label {
+    margin: 0 0 6px;
+    color: var(--teal);
+    font-size: 35px;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.admin-form__categories {
+    display: flex;
+    gap: 8px;
+}
+
+.admin-chip {
+    border: 1px solid var(--teal);
+    background: var(--teal);
+    color: #e7ffff;
+    border-radius: 5px;
+    min-width: 128px;
+    padding: 5px 12px;
+    font-size: 14px;
+}
+
+.admin-chip--active {
+    background: var(--teal-dark);
+}
+
+.admin-input {
+    border: 2px solid #2ab7bf;
+    border-radius: 7px;
+    background: #f8f8f8;
+    color: #444;
+    height: 40px;
+    padding: 7px 10px;
+    font-size: 20px;
+}
+
+.admin-input::placeholder {
+    color: #7f7f7f;
+}
+
+.admin-question-input {
+    width: 100%;
+    max-width: 590px;
+}
+
+.answer-list {
+    display: grid;
+    gap: 7px;
+}
+
+.answer-list__row {
+    display: grid;
+    grid-template-columns: 380px auto;
+    align-items: center;
+    gap: 8px;
+}
+
+.answer-list__input {
+    max-width: 380px;
+}
+
+.answer-list__star {
+    border: none;
+    background: transparent;
+    color: #23a4aa;
+    font-size: 34px;
+    line-height: 1;
+    padding: 0;
+}
+
+.answer-list__star--active {
+    color: var(--teal-dark);
+}
+
+.image-grid {
+    width: 100%;
+    max-width: 880px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.image-grid__item {
+    border: 2px solid transparent;
+    padding: 0;
+    background: transparent;
+    border-radius: 4px;
+}
+
+.image-grid__item--active {
+    border-color: var(--teal);
+}
+
+.image-grid__img {
+    width: 100%;
+    height: 120px;
+    display: block;
+    object-fit: cover;
+}
+
+.admin-finish-btn {
+    margin-top: 8px;
+    border: none;
+    background: var(--teal);
+    color: #dffeff;
+    font-size: 38px;
+    border-radius: 7px;
+    padding: 8px 16px;
+}
+
+.admin-finish-btn:hover {
+    background: var(--teal-dark);
+}
