@@ -9,14 +9,14 @@
 import { LoginPage } from "./pages/login.js";
 import { CreateAccountPage } from "./pages/createAccount.js";
 import { PlayQuizPage } from "./pages/playQuiz.js";
-// import { AdminPage } from "./pages/admin.js";  // when you make it
+import { AdminPage } from "./pages/admin.js";
 
 // Map routes to page functions
 const routes = {
     login: LoginPage,
     create: CreateAccountPage,
     play: PlayQuizPage,
-    // admin: AdminPage
+    admin: AdminPage
 };
 
 // Global navigation function

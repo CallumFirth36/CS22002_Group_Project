@@ -100,7 +100,7 @@ export function LoginPage() {
     guestBtn.classList.add("login_btn");
     guestBtn.addEventListener("click", () => {
         console.log("Play as Guest clicked");
-        // TODO: Navigate to quiz page
+        navigate("admin");
     });
     app.appendChild(guestBtn);
 
