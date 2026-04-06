@@ -1,9 +1,15 @@
 from app import app
-from models import db, Quiz, Question, Answer
+from models import db, Quiz, Question, Answer, User
 
 with app.app_context():
     db.drop_all()
     db.create_all()
+
+    # Create default admin
+    admin = User(account_number="admin", role="admin")
+    admin.set_password("admin123")
+    db.session.add(admin)
+    db.session.commit()   # <-- THIS WAS MISSING
 
     # Create quiz
     quiz = Quiz(title="Test Title")

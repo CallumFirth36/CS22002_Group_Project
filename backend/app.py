@@ -8,7 +8,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///quiz.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Import models AFTER app is created
-from models import db, Quiz, Question, Answer
+from models import db, Quiz, Question, Answer, User
 
 db.init_app(app)
 api = Api(app)
@@ -19,6 +19,53 @@ api = Api(app)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+# ---------------------------
+# ACCOUNT ENDPOINTS
+# ---------------------------
+
+@app.post("/api/accounts")
+def create_account():
+    data = request.json
+    if not data or "account_number" not in data or "password" not in data:
+        return {"error": "Missing account_number or password"}, 400
+
+    if User.query.filter_by(account_number=data["account_number"]).first():
+        return {"error": "Account number already exists"}, 400
+
+    user = User(
+        account_number=data["account_number"],
+        role=data.get("role", "user")
+    )
+    user.set_password(data["password"])
+
+    db.session.add(user)
+    db.session.commit()
+
+    return {"message": "Account created", "id": user.id}, 201
+
+
+@app.post("/api/login")
+def login():
+    data = request.json
+
+    # DEBUG LOGGING — this tells us EXACTLY what the frontend is sending
+    print("DATA RECEIVED:", data)
+
+    if not data or "account_number" not in data or "password" not in data:
+        return {"error": "Missing credentials"}, 400
+
+    user = User.query.filter_by(account_number=data["account_number"]).first()
+    print("USER FOUND:", user)
+
+    if not user or not user.check_password(data["password"]):
+        return {"error": "Invalid account number or password"}, 401
+
+    return {
+        "message": "Login successful",
+        "id": user.id,
+        "role": user.role
+    }
 
 # ---------------------------
 # REST API

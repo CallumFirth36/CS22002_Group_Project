@@ -6,8 +6,8 @@
     gap: 16px; /* space between card and nav */
     align-items: center;   /* <-- centres all children horizontally */
     text-align: center; 
-
-    font-family: monospace;
+    font-family: 'Inter', sans-serif;
+    /*font-family: monospace;*/
     position: relative;
 }
 
@@ -22,18 +22,18 @@
 }
 
 .quiz_nav button {
-    background-color: #45b3b5;
+    background-color: #1a9d9d;
     outline: none;
     padding: 0.8rem 5rem;
     border-radius: 0.70rem;
-    border: 3px solid #45b3b5;
+    border: 3px solid #1a9d9d;
     color: white;
     font-family: monospace;
     font-size: 20px;
 }
 
 .quiz_nav button:hover {
-    background-color: #30737a;
+    filter: brightness(.88);
 }
 
 .answer_btn {
@@ -41,7 +41,7 @@
     outline: none;
     padding: 0.8rem 4.5rem;
     border-radius: 0.70rem;
-    border: 3px solid #45b3b5;
+    border: 3px solid #1a9d9d;
     color: rgb(0, 0, 0);
     font-family: monospace;
     font-size: 20px;
@@ -52,12 +52,12 @@
 }
 
 .answer_btn.selected {
-    background-color: #45b3b5;
+    background-color: #1a9d9d;
     color: white;
 }
 
 ion-icon {
-    color: #45b3b5; 
+    color: #1a9d9d; 
     font-size: 50px;
     position: absolute;
     top: 10px;
@@ -65,13 +65,13 @@ ion-icon {
 }
 
 ion-icon:hover {
-    color: #30737a; 
+    filter: brightness(.88);
     
 }
 
 .quiz_title {
     font-size: 70px;
-    color: #30737a; 
+    color: #1a9d9d; 
     margin-bottom: 0px;
     
 }
