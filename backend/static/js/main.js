@@ -1,35 +1,21 @@
-/*
-    Main SPA Router
-
-    USE: Handles navigation between pages without reloading
-    AUTHOR: Callum Firth
-    DATE: 06/04/2026
-*/
-
 import { LoginPage } from "./pages/login.js";
 import { CreateAccountPage } from "./pages/createAccount.js";
 import { PlayQuizPage } from "./pages/playQuiz.js";
 import { AdminPage } from "./pages/admin.js";
+import { MenuPage } from "./pages/menu.js";
 
-// Map routes to page functions
 const routes = {
     login: LoginPage,
     create: CreateAccountPage,
     play: PlayQuizPage,
-    admin: AdminPage
+    admin: AdminPage,
+    menu: MenuPage
 };
 
-// Global navigation function
-export function navigate(page) {
+export function navigate(page, data) {
     const pageFunc = routes[page];
-
-    if (!pageFunc) {
-        console.error("Unknown page:", page);
-        return;
-    }
-
-    pageFunc(); // Render the page
+    if (!pageFunc) return;
+    pageFunc(data);
 }
 
-// Start on login page
 navigate("login");

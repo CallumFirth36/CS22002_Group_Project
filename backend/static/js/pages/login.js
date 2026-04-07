@@ -76,7 +76,7 @@ export function LoginPage() {
             //} else {
             //    navigate("play");
             //}
-            navigate("play");
+            navigate("menu");
         })
         .catch(err => console.error("Login failed:", err));
     });

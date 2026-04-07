@@ -53,6 +53,8 @@ function createQuestion() {
 
 export function AdminPage() {
     const app = document.getElementById("app");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id;
 
     let currentQuestionIndex = 0;
     const questions = [createQuestion()];
@@ -176,7 +178,7 @@ export function AdminPage() {
             const createQuizResponse = await fetch("/api/quizzes", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title: quizTitle.trim() })
+                body: JSON.stringify({ title: quizTitle.trim(),user_id: userId})
             });
             const createQuizData = await createQuizResponse.json();
 

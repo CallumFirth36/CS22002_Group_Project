@@ -1,0 +1,109 @@
+.carousel {
+    max-width: 1200px;
+    width: 100%;
+    overflow-x: auto;
+    margin: 3em auto;
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    scroll-behavior: smooth;
+    anchor-name: --carousel;
+    scroll-snap-type: x mandatory;
+}
+
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel::scroll-button(right), .carousel::scroll-button(left) {
+    content: '→';
+    background-color: red;
+    font-family: consolas;
+    font-size: 3rem;
+    color: white;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    padding-bottom: .1em;
+    cursor: pointer;
+    position: fixed;
+    position-anchor: --carousel;
+    position-area: right center;
+    translate: -50%;
+}
+
+.carousel::scroll-button(left) {
+    content: '←';
+    position-area: left center;
+    translate: 50%;
+}
+.card {
+    scroll-snap-align: start;
+    flex: 0 0 20em;
+    height: 12em;
+    background-color: blue;
+    padding: 1em;
+    border-radius: .5em;
+    text-align: center;
+    align-content: center;
+}
+
+.quiz_search {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    margin-bottom: 1em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.quiz_list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    max-height: 20rem;   /* fits ~5 items */
+    overflow-y: auto;    /* scrolls inside the list */
+    scrollbar-width: thin;
+}
+
+.quiz_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f6f6f6;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+
+.quiz_row:hover {
+    background: #eee;
+}
+
+.quiz_name {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.play_btn {
+    padding: 8px 16px;
+    background: #ff8c00;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.play_btn:hover {
+    background: #e67a00;
+}
+
+.empty_row {
+    padding: 12px;
+    text-align: center;
+    color: #666;
+}

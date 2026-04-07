@@ -79,10 +79,13 @@ class QuizListAPI(Resource):
 
     def post(self):
         data = request.json
-        if not data or "title" not in data:
-            return {"error": "Missing required field: title"}, 400
+        if not data or "title" not in data or "user_id" not in data:
+            return {"error": "Missing required fields: title and user_id"}, 400
 
-        new_quiz = Quiz(title=data["title"])
+        new_quiz = Quiz(
+            title=data["title"],
+            user_id=data["user_id"]
+        )
         db.session.add(new_quiz)
         db.session.commit()
 
@@ -210,6 +213,16 @@ class QuestionAPI(Resource):
         db.session.commit()
 
         return {"message": "Question deleted successfully"}
+
+
+# ---------------------------
+# NEW ROUTE ADDED (ONLY CHANGE)
+# ---------------------------
+
+@app.get("/api/users/<int:user_id>/quizzes")
+def get_user_quizzes(user_id):
+    quizzes = Quiz.query.filter_by(user_id=user_id).all()
+    return jsonify([{"id": q.id, "title": q.title} for q in quizzes])
 
 
 # Register API routes

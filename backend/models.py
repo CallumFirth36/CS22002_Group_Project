@@ -8,6 +8,7 @@ class User(db.Model):
     account_number = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), default="user")  # "admin" or "user"
+    quizzes = db.relationship("Quiz", backref="creator", cascade="all, delete")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -19,6 +20,7 @@ class User(db.Model):
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     questions = db.relationship("Question", backref="quiz", cascade="all, delete")
 

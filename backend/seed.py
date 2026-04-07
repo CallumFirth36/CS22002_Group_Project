@@ -11,8 +11,8 @@ with app.app_context():
     db.session.add(admin)
     db.session.commit()   # <-- THIS WAS MISSING
 
-    # Create quiz
-    quiz = Quiz(title="Test Title")
+    # Create quiz (NOW assigned to admin)
+    quiz = Quiz(title="Test Title", user_id=admin.id)
     db.session.add(quiz)
     db.session.commit()
 
