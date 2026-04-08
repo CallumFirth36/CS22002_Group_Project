@@ -1,4 +1,5 @@
 import { QuizCard } from "../components/quizCard.js";
+import { navigate } from "../main.js";
 
 export function PlayQuizPage(quizId) {
     const app = document.getElementById("app");
@@ -20,6 +21,25 @@ export function PlayQuizPage(quizId) {
             app.innerHTML = "<h2>Error loading quiz.</h2>";
         });
 
+    function finishQuiz() {
+        app.innerHTML = "";
+
+        let score = 0;
+        quiz.questions.forEach((q, i) => {
+            if (selectedAnswers[i] === q.correct) score++;
+        });
+
+        const result = document.createElement("h2");
+        result.textContent = `You scored ${score} / ${quiz.questions.length}`;
+        app.appendChild(result);
+
+        const btn = document.createElement("button");
+        btn.textContent = "Return to Menu";
+        btn.classList.add("submit");
+        btn.addEventListener("click", () => navigate("menu"));
+        app.appendChild(btn);
+    }
+
     function render() {
         app.innerHTML = "";
 
@@ -29,6 +49,34 @@ export function PlayQuizPage(quizId) {
         }
 
         app.innerHTML = `<ion-icon name="person"></ion-icon>`;
+
+        const icon = app.querySelector("ion-icon");
+        icon.style.cursor = "pointer";
+
+        icon.addEventListener("click", () => {
+            const popup = document.createElement("div");
+            popup.classList.add("logout_popup");
+
+            popup.innerHTML = `
+                <div class="logout_box">
+                    <p>Log out?</p>
+                    <button id="yesLogout">Yes</button>
+                    <button id="noLogout">No</button>
+                </div>
+            `;
+
+            document.body.appendChild(popup);
+
+            document.getElementById("yesLogout").addEventListener("click", () => {
+                localStorage.removeItem("user");
+                navigate("login");
+                popup.remove();
+            });
+
+            document.getElementById("noLogout").addEventListener("click", () => {
+                popup.remove();
+            });
+        });
 
         const title = document.createElement("h1");
         title.classList.add("quiz_title");
@@ -78,9 +126,7 @@ export function PlayQuizPage(quizId) {
             const submitBtn = document.createElement("button");
             submitBtn.textContent = "Submit";
             submitBtn.classList.add("submit");
-            submitBtn.addEventListener("click", () => {
-                app.innerHTML = "<h2>Quiz Completed</h2>";
-            });
+            submitBtn.addEventListener("click", finishQuiz);
             nav.appendChild(submitBtn);
         }
 

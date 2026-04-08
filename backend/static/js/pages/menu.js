@@ -8,7 +8,35 @@ export function MenuPage() {
     const userId = user?.id;
 
     app.innerHTML = `<ion-icon name="person"></ion-icon>`;
-    
+
+    const icon = app.querySelector("ion-icon");
+    icon.style.cursor = "pointer";
+
+    icon.addEventListener("click", () => {
+        const popup = document.createElement("div");
+        popup.classList.add("logout_popup");
+
+        popup.innerHTML = `
+            <div class="logout_box">
+                <p>Log out?</p>
+                <button id="yesLogout">Yes</button>
+                <button id="noLogout">No</button>
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        document.getElementById("yesLogout").addEventListener("click", () => {
+            localStorage.removeItem("user");
+            navigate("login");
+            popup.remove();
+        });
+
+        document.getElementById("noLogout").addEventListener("click", () => {
+            popup.remove();
+        });
+    });
+
     const title = document.createElement("h1");
     title.classList.add("quizzler_title");
     title.textContent = "Quizzler";
@@ -23,11 +51,13 @@ export function MenuPage() {
     carousel.classList.add("carousel");
     app.appendChild(carousel);
 
-    const createBtn = document.createElement("button");
-    createBtn.textContent = "Create Quiz";
-    createBtn.classList.add("create_quiz_button");
-    createBtn.addEventListener("click", () => navigate("admin"));
-    app.appendChild(createBtn);
+    if (!user?.guest) {
+        const createBtn = document.createElement("button");
+        createBtn.textContent = "Create Quiz";
+        createBtn.classList.add("create_quiz_button");
+        createBtn.addEventListener("click", () => navigate("admin"));
+        app.appendChild(createBtn);
+    }
 
     const search = document.createElement("input");
     search.id = "quizSearch";
@@ -40,7 +70,13 @@ export function MenuPage() {
     list.classList.add("quiz_list");
     app.appendChild(list);
 
-    loadUserQuizzes(userId, carousel, list);
+    if (user?.guest) {
+        showEmptyCarousel(carousel);
+    } else {
+        loadUserQuizzes(userId, carousel);
+    }
+
+    loadAllQuizzes(list);
 
     search.addEventListener("keyup", () => {
         const filter = search.value.toLowerCase();
@@ -52,24 +88,26 @@ export function MenuPage() {
     });
 }
 
-async function loadUserQuizzes(userId, carousel, list) {
+function showEmptyCarousel(carousel) {
+    carousel.innerHTML = "";
+    const emptyCard = document.createElement("div");
+    emptyCard.classList.add("card", "empty");
+    emptyCard.textContent = "You have no quizzes yet";
+    carousel.appendChild(emptyCard);
+}
+
+async function loadUserQuizzes(userId, carousel) {
     try {
         const res = await fetch(`/api/users/${userId}/quizzes`);
         const quizzes = await res.json();
 
         carousel.innerHTML = "";
-        list.innerHTML = "";
 
         if (!quizzes.length) {
             const emptyCard = document.createElement("div");
             emptyCard.classList.add("card", "empty");
             emptyCard.textContent = "You have no quizzes yet";
             carousel.appendChild(emptyCard);
-
-            const li = document.createElement("li");
-            li.textContent = "You have no quizzes yet";
-            li.classList.add("empty_row");
-            list.appendChild(li);
             return;
         }
 
@@ -81,7 +119,26 @@ async function loadUserQuizzes(userId, carousel, list) {
             card.appendChild(title);
             card.addEventListener("click", () => navigate("play", q.id));
             carousel.appendChild(card);
+        });
+    } catch (err) {}
+}
 
+async function loadAllQuizzes(list) {
+    try {
+        const res = await fetch(`/api/quizzes`);
+        const quizzes = await res.json();
+
+        list.innerHTML = "";
+
+        if (!quizzes.length) {
+            const li = document.createElement("li");
+            li.textContent = "No quizzes found";
+            li.classList.add("empty_row");
+            list.appendChild(li);
+            return;
+        }
+
+        quizzes.forEach(q => {
             const li = document.createElement("li");
             li.classList.add("quiz_row");
             const name = document.createElement("span");
@@ -95,8 +152,5 @@ async function loadUserQuizzes(userId, carousel, list) {
             li.appendChild(playBtn);
             list.appendChild(li);
         });
-
-    } catch (err) {
-        console.error("Failed to load quizzes:", err);
-    }
+    } catch (err) {}
 }

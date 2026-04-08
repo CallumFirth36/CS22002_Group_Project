@@ -226,6 +226,36 @@ export function AdminPage() {
         app.innerHTML = "";
         app.className = "admin-page";
 
+        app.innerHTML = `<ion-icon name="person"></ion-icon>`;
+
+        const icon = app.querySelector("ion-icon");
+        icon.style.cursor = "pointer";
+
+        icon.addEventListener("click", () => {
+            const popup = document.createElement("div");
+            popup.classList.add("logout_popup");
+
+            popup.innerHTML = `
+                <div class="logout_box">
+                    <p>Log out?</p>
+                    <button id="yesLogout">Yes</button>
+                    <button id="noLogout">No</button>
+                </div>
+            `;
+
+            document.body.appendChild(popup);
+
+            document.getElementById("yesLogout").addEventListener("click", () => {
+                localStorage.removeItem("user");
+                navigate("login");
+                popup.remove();
+            });
+
+            document.getElementById("noLogout").addEventListener("click", () => {
+                popup.remove();
+            });
+        });
+        
         const header = AdminHeader();
         app.appendChild(header);
 
