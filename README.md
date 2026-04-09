@@ -4,7 +4,9 @@
 - Flask
 
 ## Install Dependencies ##
+```bash
 pip install flask flask-sqlalchemy werkzeug
+```
 
 ## How to Run the Project
 ### 1. Open Codespaces
