@@ -33,7 +33,7 @@ export function QuestionList(
     countInput.max = "100";
     countInput.step = "1";
     countInput.value = String(questions.length);
-    countInput.classList.add("admin-input");
+    countInput.classList.add("admin-input", "question-list__count-input");
     countInput.addEventListener("change", (event) => {
         const nextValue = Number.parseInt(event.target.value, 10);
         if (Number.isNaN(nextValue)) {

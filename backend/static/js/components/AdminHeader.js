@@ -2,6 +2,12 @@ export function AdminHeader() {
     const header = document.createElement("header");
     header.classList.add("admin-header");
 
+    const homeButton = document.createElement("button");
+    homeButton.type = "button";
+    homeButton.classList.add("admin-header__home");
+    homeButton.setAttribute("aria-label", "Go to menu");
+    homeButton.textContent = "Menu";
+
     const title = document.createElement("h1");
     title.classList.add("admin-header__title");
     title.textContent = "Create Quiz";
@@ -16,6 +22,7 @@ export function AdminHeader() {
         </svg>
     `;
 
+    header.appendChild(homeButton);
     header.appendChild(title);
     header.appendChild(userIcon);
     return header;

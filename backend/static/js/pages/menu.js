@@ -3,6 +3,7 @@ import { navigate } from "../main.js";
 export function MenuPage() {
     const app = document.getElementById("app");
     app.innerHTML = "";
+    app.className = "";
 
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id;

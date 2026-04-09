@@ -3,8 +3,9 @@ import { QuestionList } from "../components/QuestionList.js";
 import { CategorySelector } from "../components/CategorySelector.js";
 import { AnswerOptionsEditor } from "../components/AnswerOptionsEditor.js";
 import { ImagePickerGrid } from "../components/ImagePickerGrid.js";
+import { navigate } from "../main.js";
 
-const CATEGORY_OPTIONS = ["Pokemon", "Cat 2", "Cat 3"];
+const CATEGORY_OPTIONS = ["Pokemon", "Anime", "Rick and Morty"];
 
 const IMAGE_OPTIONS = Array.from({ length: 9 }, (_, index) => {
     const imageNumber = index + 1;
@@ -13,6 +14,9 @@ const IMAGE_OPTIONS = Array.from({ length: 9 }, (_, index) => {
 
 const POKEMON_LIST_LIMIT = 1025;
 const DEFAULT_POKEMON_PREVIEW_COUNT = 40;
+const JIKAN_ANIME_PAGES = 3;
+const JIKAN_PAGE_LIMIT = 25;
+const RICK_MORTY_PAGES = 3;
 
 function getPokemonArtworkUrl(id) {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
@@ -41,6 +45,54 @@ async function fetchPokemonImages() {
         .filter(Boolean);
 }
 
+async function fetchAnimeImages() {
+    const requests = Array.from({ length: JIKAN_ANIME_PAGES }, (_, index) => {
+        const page = index + 1;
+        return fetch(`https://api.jikan.moe/v4/top/anime?page=${page}&limit=${JIKAN_PAGE_LIMIT}`);
+    });
+    const responses = await Promise.all(requests);
+
+    for (const response of responses) {
+        if (!response.ok) {
+            throw new Error("Failed to fetch anime list");
+        }
+    }
+
+    const payloads = await Promise.all(responses.map((response) => response.json()));
+    return payloads
+        .flatMap((payload) => payload?.data || [])
+        .map((anime) => ({
+            id: anime.mal_id,
+            name: anime.title,
+            url: anime.images?.jpg?.image_url || anime.images?.webp?.image_url || null
+        }))
+        .filter((anime) => anime.url);
+}
+
+async function fetchRickAndMortyImages() {
+    const requests = Array.from({ length: RICK_MORTY_PAGES }, (_, index) => {
+        const page = index + 1;
+        return fetch(`https://rickandmortyapi.com/api/character?page=${page}`);
+    });
+    const responses = await Promise.all(requests);
+
+    for (const response of responses) {
+        if (!response.ok) {
+            throw new Error("Failed to fetch Rick and Morty characters");
+        }
+    }
+
+    const payloads = await Promise.all(responses.map((response) => response.json()));
+    return payloads
+        .flatMap((payload) => payload?.results || [])
+        .map((character) => ({
+            id: character.id,
+            name: character.name,
+            url: character.image
+        }))
+        .filter((character) => character.url);
+}
+
 function createQuestion() {
     return {
         category: CATEGORY_OPTIONS[0],
@@ -61,11 +113,19 @@ export function AdminPage() {
     let quizTitle = "Untitled Quiz";
     let isSubmitting = false;
     const categoryImages = {
-        Pokemon: []
+        Pokemon: [],
+        Anime: [],
+        "Rick and Morty": []
     };
     let isPokemonLoading = false;
     let pokemonLoadError = "";
+    let isAnimeLoading = false;
+    let animeLoadError = "";
+    let isRickAndMortyLoading = false;
+    let rickAndMortyLoadError = "";
     let pokemonSearchQuery = "";
+    let animeSearchQuery = "";
+    let rickAndMortySearchQuery = "";
 
     function updateQuestion(updater, shouldRender = true) {
         updater(questions[currentQuestionIndex]);
@@ -90,6 +150,46 @@ export function AdminPage() {
             pokemonLoadError = "Unable to load Pokemon images right now.";
         } finally {
             isPokemonLoading = false;
+            render();
+        }
+    }
+
+    async function ensureAnimeImagesLoaded() {
+        if (categoryImages.Anime.length || isAnimeLoading) {
+            return;
+        }
+
+        isAnimeLoading = true;
+        animeLoadError = "";
+        render();
+
+        try {
+            categoryImages.Anime = await fetchAnimeImages();
+        } catch (error) {
+            console.error("Failed loading anime images:", error);
+            animeLoadError = "Unable to load Anime images right now.";
+        } finally {
+            isAnimeLoading = false;
+            render();
+        }
+    }
+
+    async function ensureRickAndMortyImagesLoaded() {
+        if (categoryImages["Rick and Morty"].length || isRickAndMortyLoading) {
+            return;
+        }
+
+        isRickAndMortyLoading = true;
+        rickAndMortyLoadError = "";
+        render();
+
+        try {
+            categoryImages["Rick and Morty"] = await fetchRickAndMortyImages();
+        } catch (error) {
+            console.error("Failed loading Rick and Morty images:", error);
+            rickAndMortyLoadError = "Unable to load Rick and Morty images right now.";
+        } finally {
+            isRickAndMortyLoading = false;
             render();
         }
     }
@@ -119,6 +219,12 @@ export function AdminPage() {
         if (category === "Pokemon") {
             return categoryImages.Pokemon;
         }
+        if (category === "Anime") {
+            return categoryImages.Anime;
+        }
+        if (category === "Rick and Morty") {
+            return categoryImages["Rick and Morty"];
+        }
         return IMAGE_OPTIONS;
     }
 
@@ -135,7 +241,68 @@ export function AdminPage() {
             }
             return "";
         }
+        if (category === "Anime") {
+            if (isAnimeLoading) {
+                return "Loading Anime images...";
+            }
+            if (animeLoadError) {
+                return animeLoadError;
+            }
+            if (!categoryImages.Anime.length) {
+                return "No Anime images available.";
+            }
+            return "";
+        }
+        if (category === "Rick and Morty") {
+            if (isRickAndMortyLoading) {
+                return "Loading Rick and Morty images...";
+            }
+            if (rickAndMortyLoadError) {
+                return rickAndMortyLoadError;
+            }
+            if (!categoryImages["Rick and Morty"].length) {
+                return "No Rick and Morty images available.";
+            }
+            return "";
+        }
         return "";
+    }
+
+    function getSearchConfigForCategory(category) {
+        if (category === "Pokemon") {
+            return {
+                value: pokemonSearchQuery,
+                maxDefaultResults: DEFAULT_POKEMON_PREVIEW_COUNT,
+                placeholder: "Search Pokemon by name (e.g. pika, char)",
+                onChange: (value) => {
+                    pokemonSearchQuery = value;
+                },
+                getSearchText: (pokemon) => pokemon.name
+            };
+        }
+        if (category === "Anime") {
+            return {
+                value: animeSearchQuery,
+                maxDefaultResults: DEFAULT_POKEMON_PREVIEW_COUNT,
+                placeholder: "Search Anime by title (e.g. naruto, one piece)",
+                onChange: (value) => {
+                    animeSearchQuery = value;
+                },
+                getSearchText: (anime) => anime.name
+            };
+        }
+        if (category === "Rick and Morty") {
+            return {
+                value: rickAndMortySearchQuery,
+                maxDefaultResults: DEFAULT_POKEMON_PREVIEW_COUNT,
+                placeholder: "Search character by name (e.g. Rick, Morty)",
+                onChange: (value) => {
+                    rickAndMortySearchQuery = value;
+                },
+                getSearchText: (character) => character.name
+            };
+        }
+        return null;
     }
 
     function validateQuestions() {
@@ -226,12 +393,13 @@ export function AdminPage() {
         app.innerHTML = "";
         app.className = "admin-page";
 
-        app.innerHTML = `<ion-icon name="person"></ion-icon>`;
-
-        const icon = app.querySelector("ion-icon");
-        icon.style.cursor = "pointer";
-
-        icon.addEventListener("click", () => {
+        const header = AdminHeader();
+        const headerHomeButton = header.querySelector(".admin-header__home");
+        headerHomeButton.addEventListener("click", () => {
+            navigate("menu");
+        });
+        const headerUserButton = header.querySelector(".admin-header__user");
+        headerUserButton.addEventListener("click", () => {
             const popup = document.createElement("div");
             popup.classList.add("logout_popup");
 
@@ -255,8 +423,7 @@ export function AdminPage() {
                 popup.remove();
             });
         });
-        
-        const header = AdminHeader();
+
         app.appendChild(header);
 
         const content = document.createElement("div");
@@ -327,6 +494,12 @@ export function AdminPage() {
                 if (category === "Pokemon") {
                     ensurePokemonImagesLoaded();
                 }
+                if (category === "Anime") {
+                    ensureAnimeImagesLoaded();
+                }
+                if (category === "Rick and Morty") {
+                    ensureRickAndMortyImagesLoaded();
+                }
             })
         );
 
@@ -368,17 +541,7 @@ export function AdminPage() {
                 q.selectedImageUrl = imageUrl;
             }),
             getImageStatusForCategory(currentQuestion.category),
-            currentQuestion.category === "Pokemon"
-                ? {
-                    value: pokemonSearchQuery,
-                    maxDefaultResults: DEFAULT_POKEMON_PREVIEW_COUNT,
-                    placeholder: "Search Pokemon by name (e.g. pika, char)",
-                    onChange: (value) => {
-                        pokemonSearchQuery = value;
-                    },
-                    getSearchText: (pokemon) => pokemon.name
-                }
-                : null
+            getSearchConfigForCategory(currentQuestion.category)
         );
 
         const finishButton = document.createElement("button");
