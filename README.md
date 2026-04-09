@@ -3,13 +3,14 @@
 - Python3.10+
 - Flask
 
-## Install Dependencies ##
-```bash
-pip install flask flask-sqlalchemy werkzeug flask-restful
-```
 
 ## How to Run the Project
 ### 1. Open Codespaces
+
+### Install Dependencies ###
+```bash
+pip install flask flask-sqlalchemy werkzeug flask-restful
+```
 
 ### 2. Navigate to the backend folder
 ```bash
