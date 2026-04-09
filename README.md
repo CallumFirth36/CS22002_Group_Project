@@ -5,7 +5,7 @@
 
 ## Install Dependencies ##
 ```bash
-pip install flask flask-sqlalchemy werkzeug
+pip install flask flask-sqlalchemy werkzeug flask-restful
 ```
 
 ## How to Run the Project
