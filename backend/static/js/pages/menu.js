@@ -60,16 +60,27 @@ export function MenuPage() {
         app.appendChild(createBtn);
     }
 
+    const playQuizzes = document.createElement("h2");
+    playQuizzes.classList.add("play_quiz");
+    playQuizzes.textContent = "Play Quiz";
+    app.appendChild(playQuizzes);
+
     const search = document.createElement("input");
     search.id = "quizSearch";
     search.placeholder = "Search quizzes...";
     search.classList.add("quiz_search");
     app.appendChild(search);
 
+    
+
+    const listWrapper = document.createElement("div");
+    listWrapper.classList.add("quiz_list_wrapper");
+    app.appendChild(listWrapper);
+
     const list = document.createElement("ul");
     list.id = "quizList";
     list.classList.add("quiz_list");
-    app.appendChild(list);
+    listWrapper.appendChild(list);
 
     if (user?.guest) {
         showEmptyCarousel(carousel);

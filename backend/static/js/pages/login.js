@@ -5,6 +5,11 @@ export function LoginPage() {
     const app = document.getElementById("app");
     app.innerHTML = "";
 
+    const logo = document.createElement("h1");
+    logo.textContent = "Quizzler";
+    logo.classList.add("login_logo");
+    app.appendChild(logo);
+
     const title = document.createElement("h1");
     title.textContent = "Login";
     title.classList.add("login_title");

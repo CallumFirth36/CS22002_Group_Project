@@ -11,6 +11,11 @@ export function CreateAccountPage() {
 
     const app = document.getElementById("app");
     app.innerHTML = ""; // clear page
+    
+    const logo = document.createElement("h1");
+    logo.textContent = "Quizzler";
+    logo.classList.add("login_logo");
+    app.appendChild(logo);
 
     // Title
     const title = document.createElement("h1");

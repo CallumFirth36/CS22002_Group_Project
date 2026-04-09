@@ -1,14 +1,19 @@
 .carousel {
-    max-width: 1200px;
+    max-width: 1400px;
     width: 100%;
     overflow-x: auto;
-    margin: 3em auto;
+    margin: 0.5em auto 2em auto;
     display: flex;
-    justify-content: center;
+    justify-content: center;      /* default: center when few cards */
     gap: 1em;
     scroll-behavior: smooth;
     anchor-name: --carousel;
     scroll-snap-type: x mandatory;
+}
+
+/* When there are 4 or more cards, align from the left for scrolling */
+.carousel:has(.card:nth-child(4)) {
+    justify-content: flex-start;
 }
 
 .carousel::-webkit-scrollbar {
@@ -17,7 +22,7 @@
 
 .carousel::scroll-button(right), .carousel::scroll-button(left) {
     content: '→';
-    background-color: red;
+    background-color: #1a9d9d;
     font-family: consolas;
     font-size: 3rem;
     color: white;
@@ -41,29 +46,48 @@
     scroll-snap-align: start;
     flex: 0 0 20em;
     height: 12em;
-    background-color: blue;
+    background-color: rgb(255, 255, 255);
     padding: 1em;
     border-radius: .5em;
     text-align: center;
     align-content: center;
+    border: 1px solid #1a9d9d;
 }
 
 .quiz_search {
     width: 100%;
-    padding: 12px;
-    font-size: 1.1rem;
-    margin-bottom: 1em;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    border: 1.5px solid #c6c6c6;
+    border-radius: 6px;
+    padding: 13px 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #222;
+    outline: none;
+    background: #fff;
+    transition: border-color .18s;
+    max-width: 400px;
+}
+
+.quiz_search:focus {
+  border-color: #1a9d9d;
+}
+
+.quiz_list_wrapper {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    height: 13rem; 
+    overflow: hidden;        /* keeps rounded corners visible */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .quiz_list {
     list-style: none;
     padding: 0;
     margin: 0;
-
-    max-height: 20rem;   /* fits ~5 items */
-    overflow-y: auto;    /* scrolls inside the list */
+    height: 100%;
+    overflow-y: auto;        /* scrollbar is now inside */
     scrollbar-width: thin;
 }
 
@@ -71,13 +95,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f6f6f6;
     padding: 12px;
     margin-bottom: 8px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #1a9d9d;
+    background: white;
 }
-
 
 .quiz_row:hover {
     background: #eee;
@@ -90,7 +112,7 @@
 
 .play_btn {
     padding: 8px 16px;
-    background: #ff8c00;
+    background: #1a9d9d;
     border: none;
     border-radius: 6px;
     color: white;
@@ -99,11 +121,44 @@
 }
 
 .play_btn:hover {
-    background: #e67a00;
+    background: #1a9d9d;
 }
 
 .empty_row {
     padding: 12px;
     text-align: center;
     color: #666;
+}
+
+.quizzler_title {
+    color: #1a9d9d;
+    font-size: 50px;
+    margin-bottom: 0px;
+}
+
+.create_quiz_button {
+    margin-top: 0px;
+    padding: 14px 50px;
+    background: #1a9d9d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter .15s;
+}
+
+.create_quiz_button:hover {
+    filter: brightness(.88); 
+}
+
+.your_quiz {
+    margin-bottom: 0px;
+}
+
+.play_quiz {
+    margin-top: 10px;
+    margin-bottom: 0px;
 }
