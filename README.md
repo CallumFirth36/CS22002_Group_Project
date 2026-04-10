@@ -40,6 +40,7 @@ POST /api/accounts
 
 Create new account
 
+
 POST /api/login
 
 Authenicate User
@@ -49,17 +50,21 @@ GET /api/quizzes
 
 Return all quizzes
 
+
 POST /api/quizzes
 
 Creates new quiz to the database
+
 
 GET /api/quizzes/<quiz_id>
 
 Returns a quiz
 
+
 PUT /api/quizzes/<quiz_id>
 
 Updates a quiz
+
 
 DELETE /api/quizzes/<quiz_id>
 
@@ -70,13 +75,15 @@ POST /api/quizzes/<quiz_id>/questions
 
 Add new question
 
+
 PUT /api/quizzes/<quiz_id>/questions
 
 Update question
 
+
 DELETE /api/quizzes/<quiz_id>/questions
 
-DELETE question
+Delete question
 
 ## Tech Stack ##
 ### Frontend ###
