@@ -100,6 +100,7 @@ class QuizAPI(Resource):
             ]
 
             result["questions"].append({
+                "id": q.id,
                 "image": q.image_url,
                 "question": q.question_text,
                 "answers": answers,
