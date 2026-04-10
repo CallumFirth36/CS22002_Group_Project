@@ -7,23 +7,17 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///quiz.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Import models AFTER app is created
 from models import db, Quiz, Question, Answer, User
 
 db.init_app(app)
 api = Api(app)
 
-# ---------------------------
-# Serve Frontend (SPA)
-# ---------------------------
 @app.route("/")
 def index():
     return render_template("index.html")
 
-# ---------------------------
-# ACCOUNT ENDPOINTS
-# ---------------------------
 
+# ACCOUNT ENDPOINTS
 @app.post("/api/accounts")
 def create_account():
     data = request.json
@@ -49,7 +43,6 @@ def create_account():
 def login():
     data = request.json
 
-    # DEBUG LOGGING — this tells us EXACTLY what the frontend is sending
     print("DATA RECEIVED:", data)
 
     if not data or "account_number" not in data or "password" not in data:
@@ -68,10 +61,7 @@ def login():
     }
 
 
-# ---------------------------
 # REST API
-# ---------------------------
-
 class QuizListAPI(Resource):
     def get(self):
         quizzes = Quiz.query.all()
@@ -215,9 +205,6 @@ class QuestionAPI(Resource):
         return {"message": "Question deleted successfully"}
 
 
-# ---------------------------
-# NEW ROUTE ADDED (ONLY CHANGE)
-# ---------------------------
 
 @app.get("/api/users/<int:user_id>/quizzes")
 def get_user_quizzes(user_id):

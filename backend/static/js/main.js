@@ -19,5 +19,5 @@ export function navigate(page, data) {
     pageFunc(data);
 }
 
-// Boot the app at login by default.
+// Start at Login
 navigate("login");

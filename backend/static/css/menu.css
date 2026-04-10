@@ -4,14 +4,13 @@
     overflow-x: auto;
     margin: 0.5em auto 2em auto;
     display: flex;
-    justify-content: center;      /* default: center when few cards */
+    justify-content: center;
     gap: 1em;
     scroll-behavior: smooth;
     anchor-name: --carousel;
     scroll-snap-type: x mandatory;
 }
 
-/* When there are 4 or more cards, align from the left for scrolling */
 .carousel:has(.card:nth-child(4)) {
     justify-content: flex-start;
 }
@@ -78,7 +77,7 @@
     border-radius: 15px;
     margin-top: 20px;
     height: 13rem; 
-    overflow: hidden;        /* keeps rounded corners visible */
+    overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
@@ -87,7 +86,7 @@
     padding: 0;
     margin: 0;
     height: 100%;
-    overflow-y: auto;        /* scrollbar is now inside */
+    overflow-y: auto;
     scrollbar-width: thin;
 }
 

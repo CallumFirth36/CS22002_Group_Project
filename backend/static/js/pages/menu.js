@@ -8,6 +8,7 @@ export function MenuPage() {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id;
 
+    // Account icon
     app.innerHTML = `<ion-icon name="person"></ion-icon>`;
 
     const icon = app.querySelector("ion-icon");
@@ -39,16 +40,19 @@ export function MenuPage() {
         });
     });
 
+    // Quizzler Logo
     const title = document.createElement("h1");
     title.classList.add("quizzler_title");
     title.textContent = "Quizzler";
     app.appendChild(title);
 
+    // Page title
     const yourQuizzes = document.createElement("h2");
     yourQuizzes.classList.add("your_quiz");
     yourQuizzes.textContent = "Your Quizzes";
     app.appendChild(yourQuizzes);
 
+    // carousel
     const carousel = document.createElement("div");
     carousel.classList.add("carousel");
     app.appendChild(carousel);
@@ -62,23 +66,25 @@ export function MenuPage() {
         app.appendChild(createBtn);
     }
 
+    // Play Quiz label
     const playQuizzes = document.createElement("h2");
     playQuizzes.classList.add("play_quiz");
     playQuizzes.textContent = "Play Quiz";
     app.appendChild(playQuizzes);
 
+    // Search Input
     const search = document.createElement("input");
     search.id = "quizSearch";
     search.placeholder = "Search quizzes...";
     search.classList.add("quiz_search");
     app.appendChild(search);
 
-    
-
+    // Wrapper for background
     const listWrapper = document.createElement("div");
     listWrapper.classList.add("quiz_list_wrapper");
     app.appendChild(listWrapper);
 
+    // List of quizzes
     const list = document.createElement("ul");
     list.id = "quizList";
     list.classList.add("quiz_list");
@@ -94,7 +100,6 @@ export function MenuPage() {
     loadAllQuizzes(list);
 
     search.addEventListener("keyup", () => {
-        // Client-side filter avoids extra requests for each keystroke.
         const filter = search.value.toLowerCase();
         const items = list.getElementsByTagName("li");
         for (let i = 0; i < items.length; i++) {
@@ -137,7 +142,6 @@ async function loadUserQuizzes(userId, carousel) {
             carousel.appendChild(card);
         });
     } catch (err) {
-        // Keep page usable even if personal quizzes fail to load.
     }
 }
 
@@ -171,6 +175,5 @@ async function loadAllQuizzes(list) {
             list.appendChild(li);
         });
     } catch (err) {
-        // No hard failure path yet; UI simply keeps current list state.
     }
 }

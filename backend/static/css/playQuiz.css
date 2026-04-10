@@ -1,22 +1,20 @@
 #app {
-    /*max-width: 1000px;*/
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 16px; /* space between card and nav */
-    align-items: center;   /* <-- centres all children horizontally */
+    gap: 16px;
+    align-items: center;
     text-align: center; 
     font-family: 'Inter', sans-serif;
-    /*font-family: monospace;*/
     position: relative;
 }
 
 .quiz_nav {
     display: flex;
-    justify-content: center;   /* centre the buttons */
+    justify-content: center;
     align-items: center;
-    gap: 80px;                 /* spacing between buttons */
-    width: auto;               /* shrink container to fit buttons */
+    gap: 80px;
+    width: auto;
     margin: 0 auto; 
     margin-top: 40px;
 }
@@ -82,16 +80,16 @@ ion-icon:hover {
 
 .quiz_image {
     width: 100%;
-    max-width:500px;     /* control how wide the image can get */
-    height: 350px;        /* fixed display height */
-    object-fit: contain;    /* crop edges but keep aspect ratio */
+    max-width:500px;
+    height: 350px;
+    object-fit: contain;
     border-radius: 8px;
 }
 
 .quiz_question {
-    max-width: 600px;      /* controls when the line wraps */
-    margin: 0 auto;        /* centres the text block */
-    text-align: center;    /* optional */
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
     overflow-wrap: break-word; 
 }
 
