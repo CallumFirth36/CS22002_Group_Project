@@ -17,7 +17,7 @@ cd project-name
 cd backend
 pip install -r requirements.txt
 ```
-## Frontend Setup ###
+### Frontend Setup ###
 No installation required
 
 ## Usage
