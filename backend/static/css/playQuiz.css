@@ -28,7 +28,6 @@
     border-radius: 0.70rem;
     border: 3px solid #1a9d9d;
     color: white;
-    font-family: monospace;
     font-size: 20px;
 }
 
@@ -43,7 +42,6 @@
     border-radius: 0.70rem;
     border: 3px solid #1a9d9d;
     color: rgb(0, 0, 0);
-    font-family: monospace;
     font-size: 20px;
 }
 
@@ -99,4 +97,22 @@ ion-icon:hover {
 
 .quiz_answers {
     margin-top: 20px;
+}
+
+.submit {
+    margin-top: 0px;
+    padding: 14px 50px;
+    background: #1a9d9d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter .15s;
+}
+
+.submit:hover {
+    filter: brightness(.88); 
 }

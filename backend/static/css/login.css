@@ -1,32 +1,40 @@
 .login_btn {
-      padding: 14px 50px;
-      background: #1a9d9d;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: filter .15s;
-    }
-.login_btn:hover { filter: brightness(.88); }
+  padding: 14px 50px;
+  background: #1a9d9d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter .15s;
+}
+
+.login_btn:hover { 
+  filter: brightness(.88); 
+}
 
 .login_input {
   width: 100%;
-    border: 1.5px solid #c6c6c6;
-    border-radius: 6px;
-    padding: 13px 15px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    color: #222;
-    outline: none;
-    background: #fff;
-    transition: border-color .18s;
-    max-width: 400px;
+  border: 1.5px solid #c6c6c6;
+  border-radius: 6px;
+  padding: 13px 15px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #222;
+  outline: none;
+  background: #fff;
+  transition: border-color .18s;
+  max-width: 400px;
 }
 
 .login_input:focus {
   border-color: #1a9d9d;
 }
 
+.login_logo {
+  color: #1a9d9d;
+  font-size: 50px;
+  margin-bottom: 0px;
+}
