@@ -113,15 +113,32 @@ function createQuestion() {
     };
 }
 
-export function AdminPage() {
+function hydrateQuestionFromApi(questionData = {}) {
+    return {
+        id: questionData.id ?? null,
+        category: CATEGORY_OPTIONS[0],
+        questionText: questionData.question || "",
+        answers: Array.isArray(questionData.answers)
+            ? questionData.answers.slice(0, 4).map((answer) => String(answer ?? ""))
+            : ["", "", "", ""],
+        correctAnswerIndex: Number.isInteger(questionData.correct) ? questionData.correct : null,
+        selectedImageUrl: questionData.image || null
+    };
+}
+
+export function AdminPage(routeData = {}) {
     const app = document.getElementById("app");
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id;
+    let activeQuizId = Number(routeData?.quizId) || null;
+    const isEditMode = () => Boolean(activeQuizId);
 
     let currentQuestionIndex = 0;
     const questions = [createQuestion()];
+    let initialQuestionIds = [];
     let quizTitle = "Untitled Quiz";
     let isSubmitting = false;
+    let isLoadingQuiz = false;
     const categoryImages = {
         Pokemon: [],
         Anime: [],
@@ -347,6 +364,35 @@ export function AdminPage() {
         return null;
     }
 
+    async function loadQuizForEdit(quizId) {
+        isLoadingQuiz = true;
+        render();
+        try {
+            const response = await fetch(`/api/quizzes/${quizId}`);
+            const data = await response.json();
+            if (!response.ok || data.error) {
+                throw new Error(data.error || "Failed to load quiz.");
+            }
+
+            const loadedQuestions = Array.isArray(data.questions)
+                ? data.questions.map(hydrateQuestionFromApi)
+                : [];
+
+            quizTitle = data.title || "Untitled Quiz";
+            questions.splice(0, questions.length, ...(loadedQuestions.length ? loadedQuestions : [createQuestion()]));
+            currentQuestionIndex = 0;
+            initialQuestionIds = questions
+                .map((question) => question.id)
+                .filter((id) => Number.isInteger(id));
+        } catch (error) {
+            window.alert(`Failed to load quiz: ${error.message}`);
+            navigate("menu");
+        } finally {
+            isLoadingQuiz = false;
+            render();
+        }
+    }
+
     async function submitQuiz() {
         const validationError = validateQuestions();
         if (validationError) {
@@ -358,19 +404,49 @@ export function AdminPage() {
         render();
 
         try {
-            // First create the quiz shell, then post each question under it.
-            const createQuizResponse = await fetch("/api/quizzes", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title: quizTitle.trim(),user_id: userId})
-            });
-            const createQuizData = await createQuizResponse.json();
+            let quizId = activeQuizId;
 
-            if (!createQuizResponse.ok || createQuizData.error || !createQuizData.id) {
-                throw new Error(createQuizData.error || "Failed to create quiz.");
+            if (isEditMode()) {
+                const updateQuizResponse = await fetch(`/api/quizzes/${quizId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title: quizTitle.trim() })
+                });
+                const updateQuizData = await updateQuizResponse.json();
+                if (!updateQuizResponse.ok || updateQuizData.error) {
+                    throw new Error(updateQuizData.error || "Failed to update quiz.");
+                }
+            } else {
+                // First create the quiz shell, then post each question under it.
+                const createQuizResponse = await fetch("/api/quizzes", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title: quizTitle.trim(), user_id: userId })
+                });
+                const createQuizData = await createQuizResponse.json();
+
+                if (!createQuizResponse.ok || createQuizData.error || !createQuizData.id) {
+                    throw new Error(createQuizData.error || "Failed to create quiz.");
+                }
+                quizId = createQuizData.id;
+                activeQuizId = quizId;
             }
 
-            const quizId = createQuizData.id;
+            const existingQuestionIds = questions
+                .map((question) => question.id)
+                .filter((id) => Number.isInteger(id));
+            const removedQuestionIds = initialQuestionIds.filter((id) => !existingQuestionIds.includes(id));
+
+            for (const questionId of removedQuestionIds) {
+                const deleteResponse = await fetch(`/api/quizzes/${quizId}/questions/${questionId}`, {
+                    method: "DELETE"
+                });
+                const deleteData = await deleteResponse.json();
+                if (!deleteResponse.ok || deleteData.error) {
+                    throw new Error(deleteData.error || "Failed to remove deleted question.");
+                }
+            }
+
             for (const question of questions) {
                 // Trim values before submit to avoid whitespace-only entries.
                 const payload = {
@@ -380,8 +456,13 @@ export function AdminPage() {
                     correct: question.correctAnswerIndex
                 };
 
-                const questionResponse = await fetch(`/api/quizzes/${quizId}/questions`, {
-                    method: "POST",
+                const isExistingQuestion = Number.isInteger(question.id);
+                const endpoint = isExistingQuestion
+                    ? `/api/quizzes/${quizId}/questions/${question.id}`
+                    : `/api/quizzes/${quizId}/questions`;
+                const method = isExistingQuestion ? "PUT" : "POST";
+                const questionResponse = await fetch(endpoint, {
+                    method,
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
@@ -390,9 +471,16 @@ export function AdminPage() {
                 if (!questionResponse.ok || questionData.error) {
                     throw new Error(questionData.error || "Failed to save a question.");
                 }
+                if (!isExistingQuestion && questionData.id) {
+                    question.id = questionData.id;
+                }
             }
 
-            window.alert(`Quiz saved successfully (ID: ${quizId}).`);
+            initialQuestionIds = questions
+                .map((question) => question.id)
+                .filter((id) => Number.isInteger(id));
+
+            window.alert(isEditMode() ? "Quiz updated successfully." : `Quiz saved successfully (ID: ${quizId}).`);
             console.log("Saved quiz:", {
                 id: quizId,
                 title: quizTitle.trim(),
@@ -413,6 +501,8 @@ export function AdminPage() {
         app.className = "admin-page";
 
         const header = AdminHeader();
+        const headerTitle = header.querySelector(".admin-header__title");
+        headerTitle.textContent = isEditMode() ? "Edit Quiz" : "Create Quiz";
         const headerHomeButton = header.querySelector(".admin-header__home");
         headerHomeButton.addEventListener("click", () => {
             navigate("menu");
@@ -447,6 +537,13 @@ export function AdminPage() {
 
         const content = document.createElement("div");
         content.classList.add("admin-content");
+        if (isLoadingQuiz) {
+            const loadingState = document.createElement("section");
+            loadingState.classList.add("admin-editor");
+            loadingState.textContent = "Loading quiz...";
+            app.appendChild(loadingState);
+            return;
+        }
 
         const listPanel = QuestionList(
             questions,
@@ -604,9 +701,42 @@ export function AdminPage() {
         const submitButton = document.createElement("button");
         submitButton.type = "button";
         submitButton.classList.add("admin-finish-btn");
-        submitButton.textContent = isSubmitting ? "Submitting..." : "Submit Quiz";
+        submitButton.textContent = isSubmitting ? "Submitting..." : (isEditMode() ? "Save Changes" : "Submit Quiz");
         submitButton.disabled = isSubmitting;
         submitButton.addEventListener("click", submitQuiz);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.classList.add("admin-finish-btn");
+        deleteButton.textContent = "Delete Quiz";
+        deleteButton.style.background = "#9f2d2d";
+        deleteButton.style.borderColor = "#9f2d2d";
+        deleteButton.disabled = isSubmitting;
+        deleteButton.addEventListener("click", async () => {
+            if (!isEditMode()) {
+                return;
+            }
+            const confirmed = window.confirm("Delete this quiz? This cannot be undone.");
+            if (!confirmed) {
+                return;
+            }
+            try {
+                isSubmitting = true;
+                render();
+                const deleteQuizResponse = await fetch(`/api/quizzes/${activeQuizId}`, { method: "DELETE" });
+                const deleteQuizData = await deleteQuizResponse.json();
+                if (!deleteQuizResponse.ok || deleteQuizData.error) {
+                    throw new Error(deleteQuizData.error || "Failed to delete quiz.");
+                }
+                window.alert("Quiz deleted successfully.");
+                navigate("menu");
+            } catch (error) {
+                window.alert(`Failed to delete quiz: ${error.message}`);
+            } finally {
+                isSubmitting = false;
+                render();
+            }
+        });
 
         editorPanel.appendChild(heading);
         editorPanel.appendChild(titleSection);
@@ -616,6 +746,9 @@ export function AdminPage() {
         editorPanel.appendChild(imagesSection);
         editorPanel.appendChild(finishButton);
         editorPanel.appendChild(submitButton);
+        if (isEditMode()) {
+            editorPanel.appendChild(deleteButton);
+        }
 
         content.appendChild(listPanel);
         content.appendChild(editorPanel);
@@ -623,5 +756,9 @@ export function AdminPage() {
     }
 
     ensurePokemonImagesLoaded();
-    render();
+    if (isEditMode()) {
+        loadQuizForEdit(activeQuizId);
+    } else {
+        render();
+    }
 }
