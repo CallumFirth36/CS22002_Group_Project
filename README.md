@@ -36,36 +36,54 @@ For this project a RESTful API was built using Flask and Flask-RESTful.
 
 ### Endpoints
 #### Accounts
-**POST /api/accounts**
+```bash
+POST /api/accounts
+```
 Create new account
 
-**POST /api/login**
+```bash
+POST /api/login
+```
 Authenicate User
 
 #### Quizzes
-**GET /api/quizzes**
+```bash
+GET /api/quizzes
+```
 Return all quizzes
 
-**POST /api/quizzes**
+*```bash
+POST /api/quizzes
+```
 Creates new quiz to the database
 
-**GET /api/quizzes/<quiz_id>**
+```bashGET /api/quizzes/<quiz_id>
+```
 Returns a quiz
 
-**PUT /api/quizzes/<quiz_id>**
+```bashPUT /api/quizzes/<quiz_id>
+```
 Updates a quiz
 
-**DELETE /api/quizzes/<quiz_id>**
+```bash
+DELETE /api/quizzes/<quiz_id>
+```
 Delete a quiz
 
 #### Questions
-**POST /api/quizzes/<quiz_id>/questions**
+```bash
+POST /api/quizzes/<quiz_id>/questions
+```
 Add new question
 
-**PUT /api/quizzes/<quiz_id>/questions**
+```bash
+PUT /api/quizzes/<quiz_id>/questions
+```
 Update question
 
-**DELETE /api/quizzes/<quiz_id>/questions**
+```bash
+DELETE /api/quizzes/<quiz_id>/questions
+```
 DELETE question
 
 ## Tech Stack ##
