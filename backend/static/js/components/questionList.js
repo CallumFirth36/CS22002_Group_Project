@@ -3,7 +3,7 @@
 
     USE: Used to display an interactive list of questions on the admin page
     AUTHOR: Bailey Clark
-    DATE: 23/03/2026
+    DATE: 10/04/2026
 */
 export function QuestionList(
     questions,
@@ -13,6 +13,7 @@ export function QuestionList(
     onRemoveQuestion,
     onQuestionCountChange
 ) {
+    // Build the left-side panel that controls question navigation/count.
     const panel = document.createElement("aside");
     panel.classList.add("question-list-panel");
 
@@ -35,6 +36,7 @@ export function QuestionList(
     countInput.value = String(questions.length);
     countInput.classList.add("admin-input", "question-list__count-input");
     countInput.addEventListener("change", (event) => {
+        // Sanitize user input before syncing question count to parent state.
         const nextValue = Number.parseInt(event.target.value, 10);
         if (Number.isNaN(nextValue)) {
             event.target.value = String(questions.length);
@@ -59,6 +61,7 @@ export function QuestionList(
             btn.classList.add("admin-chip--active");
         }
         btn.textContent = `Question ${index + 1}`;
+        // Let the parent decide how selected question state is updated.
         btn.addEventListener("click", () => onSelectQuestion(index));
         list.appendChild(btn);
     });
@@ -76,6 +79,7 @@ export function QuestionList(
     removeBtn.type = "button";
     removeBtn.classList.add("admin-chip");
     removeBtn.textContent = "- Remove";
+    // Prevent deleting the final question to keep form valid.
     removeBtn.disabled = questions.length <= 1;
     removeBtn.addEventListener("click", onRemoveQuestion);
 

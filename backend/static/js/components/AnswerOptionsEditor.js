@@ -1,3 +1,10 @@
+/*
+    Answer Options Editor Component
+
+    USE: Used to display an editor for the answers of the question on the admin page
+    AUTHOR: Bailey Clark
+    DATE: 10/04/2026
+*/  
 export function AnswerOptionsEditor(answers, correctAnswerIndex, onAnswerChange, onCorrectAnswerSelect) {
     const wrapper = document.createElement("section");
     wrapper.classList.add("admin-form__section");
@@ -19,12 +26,14 @@ export function AnswerOptionsEditor(answers, correctAnswerIndex, onAnswerChange,
         input.value = answerText;
         input.placeholder = `Answer ${index + 1}`;
         input.addEventListener("input", (event) => {
+            // Parent owns state; component only emits updates.
             onAnswerChange(index, event.target.value);
         });
 
         const button = document.createElement("button");
         button.type = "button";
         button.classList.add("answer-list__star");
+        // Active star marks which answer is currently correct.
         if (index === correctAnswerIndex) {
             button.classList.add("answer-list__star--active");
         }

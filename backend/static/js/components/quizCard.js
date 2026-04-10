@@ -27,6 +27,7 @@ export function QuizCard(data, onAnswerSelect, selectedAnswer) {
         </div>
     `; // adds all the required elements to the html page
 
+    // Attach click handlers after HTML template is inserted.
     card.querySelectorAll(".answer_btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const index = Number(btn.dataset.index);

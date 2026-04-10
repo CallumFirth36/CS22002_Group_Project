@@ -9,6 +9,7 @@ export function PlayQuizPage(quizId) {
     let current = 0;
     let selectedAnswers = [];
 
+    // Fetch selected quiz once, then drive UI from local state.
     fetch(`/api/quizzes/${quizId}`)
         .then(res => res.json())
         .then(data => {
@@ -26,6 +27,7 @@ export function PlayQuizPage(quizId) {
 
         let score = 0;
         quiz.questions.forEach((q, i) => {
+            // Stored selected index is compared against API-provided correct index.
             if (selectedAnswers[i] === q.correct) score++;
         });
 
@@ -54,6 +56,7 @@ export function PlayQuizPage(quizId) {
         icon.style.cursor = "pointer";
 
         icon.addEventListener("click", () => {
+            // Keep logout behavior consistent with menu/admin pages.
             const popup = document.createElement("div");
             popup.classList.add("logout_popup");
 
@@ -91,6 +94,7 @@ export function PlayQuizPage(quizId) {
         const card = QuizCard(
             quiz.questions[current],
             (selectedIndex) => {
+                // Persist answer per question so back/next navigation keeps selections.
                 selectedAnswers[current] = selectedIndex;
                 render();
             },
@@ -123,6 +127,7 @@ export function PlayQuizPage(quizId) {
             });
             nav.appendChild(nextBtn);
         } else {
+            // On final question, replace "Next" with a score submission action.
             const submitBtn = document.createElement("button");
             submitBtn.textContent = "Submit";
             submitBtn.classList.add("submit");

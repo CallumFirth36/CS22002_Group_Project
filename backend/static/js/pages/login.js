@@ -39,6 +39,7 @@ export function LoginPage() {
         const account = accInput.value.trim();
         const password = passInput.value.trim();
 
+        // Authenticate and store returned user payload for later pages.
         fetch("/api/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -51,6 +52,7 @@ export function LoginPage() {
                 return;
             }
 
+            // Local session state is persisted in browser storage.
             localStorage.setItem("user", JSON.stringify(data));
             navigate("menu");
         });
@@ -68,6 +70,7 @@ export function LoginPage() {
     guestBtn.textContent = "Play as Guest";
     guestBtn.classList.add("login_btn");
     guestBtn.addEventListener("click", () => {
+        // Guest profile skips account-specific features like quiz creation.
         localStorage.setItem("user", JSON.stringify({ id: null, guest: true }));
         navigate("menu");
     });

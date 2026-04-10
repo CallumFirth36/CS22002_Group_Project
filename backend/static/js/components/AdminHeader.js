@@ -1,3 +1,10 @@
+/*
+    Admin Header Component
+
+    USE: Used to display the header of the admin page
+    AUTHOR: Bailey Clark
+    DATE: 10/04/2026
+*/
 export function AdminHeader() {
     const header = document.createElement("header");
     header.classList.add("admin-header");
@@ -11,7 +18,7 @@ export function AdminHeader() {
     const title = document.createElement("h1");
     title.classList.add("admin-header__title");
     title.textContent = "Create Quiz";
-
+    
     const userIcon = document.createElement("button");
     userIcon.type = "button";
     userIcon.classList.add("admin-header__user");
@@ -22,6 +29,7 @@ export function AdminHeader() {
         </svg>
     `;
 
+    // Keep structure predictable for page-level event binding.
     header.appendChild(homeButton);
     header.appendChild(title);
     header.appendChild(userIcon);

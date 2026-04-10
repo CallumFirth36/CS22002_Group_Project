@@ -1,5 +1,12 @@
+/*
+    Admin Page
+
+    USE: The JavaScript used for the admin page
+    AUTHOR: Bailey Clark
+    DATE: 10/04/2026
+*/
 import { AdminHeader } from "../components/AdminHeader.js";
-import { QuestionList } from "../components/QuestionList.js";
+import { QuestionList } from "../components/questionList.js";
 import { CategorySelector } from "../components/CategorySelector.js";
 import { AnswerOptionsEditor } from "../components/AnswerOptionsEditor.js";
 import { ImagePickerGrid } from "../components/ImagePickerGrid.js";
@@ -19,6 +26,7 @@ const JIKAN_PAGE_LIMIT = 25;
 const RICK_MORTY_PAGES = 3;
 
 function getPokemonArtworkUrl(id) {
+    // Use official artwork endpoint for more consistent image quality.
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 }
 
@@ -31,6 +39,7 @@ async function fetchPokemonImages() {
     const listData = await listResponse.json();
     return listData.results
         .map((pokemon) => {
+            // PokeAPI list endpoint gives IDs inside the resource URL.
             const match = pokemon.url.match(/\/pokemon\/(\d+)\/?$/);
             if (!match) {
                 return null;
@@ -94,6 +103,7 @@ async function fetchRickAndMortyImages() {
 }
 
 function createQuestion() {
+    // Shared default shape used for both initial and newly added questions.
     return {
         category: CATEGORY_OPTIONS[0],
         questionText: "",
@@ -128,6 +138,7 @@ export function AdminPage() {
     let rickAndMortySearchQuery = "";
 
     function updateQuestion(updater, shouldRender = true) {
+        // Centralized state mutation for current question.
         updater(questions[currentQuestionIndex]);
         if (shouldRender) {
             render();
@@ -135,6 +146,7 @@ export function AdminPage() {
     }
 
     async function ensurePokemonImagesLoaded() {
+        // Skip repeat fetches once data exists or request is already in-flight.
         if (categoryImages.Pokemon.length || isPokemonLoading) {
             return;
         }
@@ -195,6 +207,7 @@ export function AdminPage() {
     }
 
     function setQuestionCount(nextCount) {
+        // Keep at least one question so editor always has a target.
         const targetCount = Math.max(1, nextCount);
         if (targetCount === questions.length) {
             return;
@@ -229,6 +242,7 @@ export function AdminPage() {
     }
 
     function getImageStatusForCategory(category) {
+        // Return contextual loading/empty/error text for image picker panel.
         if (category === "Pokemon") {
             if (isPokemonLoading) {
                 return "Loading Pokemon images...";
@@ -269,6 +283,7 @@ export function AdminPage() {
     }
 
     function getSearchConfigForCategory(category) {
+        // Search config is category-specific so query state is preserved per tab.
         if (category === "Pokemon") {
             return {
                 value: pokemonSearchQuery,
@@ -306,6 +321,7 @@ export function AdminPage() {
     }
 
     function validateQuestions() {
+        // Validate all data client-side before calling save APIs.
         if (!quizTitle.trim()) {
             return "Quiz title is required.";
         }
@@ -342,6 +358,7 @@ export function AdminPage() {
         render();
 
         try {
+            // First create the quiz shell, then post each question under it.
             const createQuizResponse = await fetch("/api/quizzes", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -355,6 +372,7 @@ export function AdminPage() {
 
             const quizId = createQuizData.id;
             for (const question of questions) {
+                // Trim values before submit to avoid whitespace-only entries.
                 const payload = {
                     question: question.questionText.trim(),
                     image: question.selectedImageUrl,
@@ -390,6 +408,7 @@ export function AdminPage() {
     }
 
     function render() {
+        // Full rerender keeps UI in sync with simple local state variables.
         app.innerHTML = "";
         app.className = "admin-page";
 
@@ -442,6 +461,7 @@ export function AdminPage() {
                 render();
             },
             () => {
+                // Remove current question and move selection if needed.
                 if (questions.length <= 1) {
                     return;
                 }
@@ -491,6 +511,7 @@ export function AdminPage() {
             (category) => updateQuestion((q) => {
                 q.category = category;
                 q.selectedImageUrl = null;
+                // Lazy-load assets only when category is actually selected.
                 if (category === "Pokemon") {
                     ensurePokemonImagesLoaded();
                 }
@@ -549,6 +570,7 @@ export function AdminPage() {
         finishButton.classList.add("admin-finish-btn");
         finishButton.textContent = "Finish Question";
         finishButton.addEventListener("click", () => {
+            // Console draft is useful for manual QA while building quizzes.
             const currentQuestionOutput = {
                 question: currentQuestionIndex + 1,
                 category: currentQuestion.category,

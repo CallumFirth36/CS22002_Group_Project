@@ -14,6 +14,7 @@ export function MenuPage() {
     icon.style.cursor = "pointer";
 
     icon.addEventListener("click", () => {
+        // Reuse a lightweight confirmation popup for sign-out.
         const popup = document.createElement("div");
         popup.classList.add("logout_popup");
 
@@ -53,6 +54,7 @@ export function MenuPage() {
     app.appendChild(carousel);
 
     if (!user?.guest) {
+        // Guests can play quizzes but should not create new ones.
         const createBtn = document.createElement("button");
         createBtn.textContent = "Create Quiz";
         createBtn.classList.add("create_quiz_button");
@@ -74,12 +76,14 @@ export function MenuPage() {
     if (user?.guest) {
         showEmptyCarousel(carousel);
     } else {
+        // Logged-in users see their own authored quizzes in the carousel.
         loadUserQuizzes(userId, carousel);
     }
 
     loadAllQuizzes(list);
 
     search.addEventListener("keyup", () => {
+        // Client-side filter avoids extra requests for each keystroke.
         const filter = search.value.toLowerCase();
         const items = list.getElementsByTagName("li");
         for (let i = 0; i < items.length; i++) {
@@ -121,7 +125,9 @@ async function loadUserQuizzes(userId, carousel) {
             card.addEventListener("click", () => navigate("play", q.id));
             carousel.appendChild(card);
         });
-    } catch (err) {}
+    } catch (err) {
+        // Keep page usable even if personal quizzes fail to load.
+    }
 }
 
 async function loadAllQuizzes(list) {
@@ -153,5 +159,7 @@ async function loadAllQuizzes(list) {
             li.appendChild(playBtn);
             list.appendChild(li);
         });
-    } catch (err) {}
+    } catch (err) {
+        // No hard failure path yet; UI simply keeps current list state.
+    }
 }

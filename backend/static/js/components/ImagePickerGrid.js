@@ -1,3 +1,10 @@
+/*
+    Image Picker Grid Component
+
+    USE: Used to display an interactive grid of images on the admin page
+    AUTHOR: Bailey Clark
+    DATE: 10/04/2026
+*/
 export function ImagePickerGrid(
     images,
     selectedImageUrl,
@@ -14,6 +21,7 @@ export function ImagePickerGrid(
 
     const getImageUrl = (image) => (typeof image === "string" ? image : image.url);
     const getImageName = (image, index) => (typeof image === "string" ? `image ${index + 1}` : image.name);
+    // Allow each category to define custom search text (name/title/character).
     const getSearchText = (image, index) => {
         if (!searchConfig || !searchConfig.getSearchText) {
             return getImageName(image, index);
@@ -25,6 +33,7 @@ export function ImagePickerGrid(
 
     let searchInput = null;
     if (searchConfig) {
+        // Optional search bar is rendered only when category supports searching.
         searchInput = document.createElement("input");
         searchInput.type = "text";
         searchInput.classList.add("admin-input");
@@ -46,6 +55,7 @@ export function ImagePickerGrid(
 
         const query = (searchInput?.value || "").trim().toLowerCase();
         if (!query) {
+            // Keep default list short to reduce visual noise before searching.
             const maxDefaultResults = searchConfig.maxDefaultResults || images.length;
             return images.slice(0, maxDefaultResults);
         }
@@ -95,6 +105,7 @@ export function ImagePickerGrid(
             
             button.appendChild(imageElement);
             button.appendChild(nameElement);
+            // Bubble selected image URL back to admin page state.
             button.addEventListener("click", () => onSelectImage(imageUrl));
             grid.appendChild(button);
         });

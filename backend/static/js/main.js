@@ -13,9 +13,11 @@ const routes = {
 };
 
 export function navigate(page, data) {
+    // Route keys map directly to page factory functions.
     const pageFunc = routes[page];
     if (!pageFunc) return;
     pageFunc(data);
 }
 
+// Boot the app at login by default.
 navigate("login");
